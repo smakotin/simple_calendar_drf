@@ -10,7 +10,7 @@ build
 _build
 .cache
 *.so
-.env
+mega_calendar/.env
 
 # Installer logs
 pip-log.txt
