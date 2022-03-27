@@ -6,6 +6,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     city = models.CharField(max_length=100, blank=True)
 
-    REQUIRED_FIELDS = ['email', 'city']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'city']
 
 
