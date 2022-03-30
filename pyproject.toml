@@ -12,6 +12,9 @@ celery = "^5.2.3"
 djoser = "^2.1.0"
 django-environ = "^0.8.1"
 psycopg2 = "^2.9.3"
+ics = "^0.7"
+beautifulsoup4 = "^4.10.0"
+lxml = "^4.8.0"
 
 [tool.poetry.dev-dependencies]
 
