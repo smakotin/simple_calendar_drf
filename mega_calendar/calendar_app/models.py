@@ -4,20 +4,24 @@ from django.db import models
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    country = models.CharField(max_length=100, blank=True)
+    country = models.ForeignKey('Country', null=True, blank=True, on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'country']
+    REQUIRED_FIELDS = ['username']
 
 
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
-    event_date = models.DateField()  # format 'YYYY-MM-DD'
-    start_time = models.TimeField(default='00:00')
-    end_time = models.TimeField(default='23:59')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     notification = models.ForeignKey('Notification', on_delete=models.CASCADE)
+    official_holiday = models.BooleanField(default=False)
+
+
+class Country(models.Model):
+    country = models.CharField(max_length=100, unique=True)
 
 
 class Notification(models.Model):

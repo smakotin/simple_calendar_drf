@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from calendar_app.models import User, Event, Notification
+from calendar_app.models import User, Event, Notification, Country
 
 
 @admin.register(User)
@@ -12,3 +12,4 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 admin.site.register(Event)
 admin.site.register(Notification)
+admin.site.register(Country)

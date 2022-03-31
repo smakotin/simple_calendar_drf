@@ -1,0 +1,1 @@
+use command ***python manage.py create_country*** to fill the database of countries
