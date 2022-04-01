@@ -7,3 +7,12 @@ class EventSerializer(ModelSerializer):
     class Meta:
         model = Event
         fields = '__all__'
+
+
+class CreateEventSerializer(ModelSerializer):
+    class Meta:
+        model = Event
+        exclude = ('created_at', 'user', 'official_holiday')
+
+
+

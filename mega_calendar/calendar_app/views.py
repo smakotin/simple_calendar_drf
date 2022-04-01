@@ -4,12 +4,12 @@ from django.db.models import Q
 from django.shortcuts import render
 from djoser.views import UserViewSet
 from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from calendar_app.models import Event
-from calendar_app.serializers import EventSerializer
+from calendar_app.serializers import EventSerializer, CreateEventSerializer
 
 
 def index(request):
@@ -29,6 +29,14 @@ class ActivateUserByEmail(UserViewSet):
     def activation(self, request, uid, token, *args, **kwargs):
         super().activation(request, *args, **kwargs)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class EventsCreateApiView(CreateAPIView):
+    serializer_class = CreateEventSerializer
+    queryset = Event.objects
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user.pk)
 
 
 class EventsListApiView(ListAPIView):

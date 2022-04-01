@@ -26,7 +26,7 @@ class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    end_time = models.DateTimeField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     notification = models.ForeignKey(
         Notification,
@@ -36,6 +36,8 @@ class Event(models.Model):
     official_holiday = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
+        if not self.end_time:
+            self.end_time = self.start_time
         if self.start_time > self.end_time:
             self.start_time, self.end_time = self.end_time, self.start_time
         super().save(*args, **kwargs)
