@@ -40,11 +40,12 @@ class Event(models.Model):
             self.start_time, self.end_time = self.end_time, self.start_time
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.title
+
 
 class Country(models.Model):
     country = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.country
-
-

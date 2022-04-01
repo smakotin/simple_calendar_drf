@@ -10,6 +10,11 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'username', 'email')
 
 
-admin.site.register(Event)
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'title', 'start_time', 'end_time', 'official_holiday')
+    list_display_links = ('id', 'user')
+
+
 admin.site.register(Notification)
 admin.site.register(Country)
