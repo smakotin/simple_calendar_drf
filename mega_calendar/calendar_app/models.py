@@ -37,7 +37,7 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.end_time:
-            self.end_time = self.start_time
+            self.end_time = self.start_time.replace(hour=23, minute=59)
         if self.start_time > self.end_time:
             self.start_time, self.end_time = self.end_time, self.start_time
         super().save(*args, **kwargs)
