@@ -1,7 +1,8 @@
 from django.urls import path, register_converter
-
 from calendar_app.converters import DateConverter
 from calendar_app import views
+from calendar_app.models import Event
+from calendar_app.views import EventFilter
 
 register_converter(DateConverter, 'date')
 
@@ -12,5 +13,6 @@ urlpatterns = [
 
     path('api/events/new/', views.EventsCreateApiView.as_view()),
     path('api/events/', views.EventsListApiView.as_view(), name='events_list'),
-    path('api/events/date/<date:my_date>/', views.EventsDayListApiView.as_view()),
+    # path('api/events/date/<date:my_date>/', views.EventsDayListApiView.as_view()),
+    path('api/events/date/', views.EventsDayListApiView.as_view()),
 ]
