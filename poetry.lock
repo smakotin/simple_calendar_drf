@@ -451,6 +451,19 @@ signals = ["blinker (>=1.4.0)"]
 signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
+name = "pika"
+version = "1.2.0"
+description = "Pika Python AMQP Client Library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+gevent = ["gevent"]
+tornado = ["tornado"]
+twisted = ["twisted"]
+
+[[package]]
 name = "prompt-toolkit"
 version = "3.0.28"
 description = "Library for building powerful interactive command lines in Python"
@@ -524,6 +537,17 @@ description = "World timezone definitions, modern and historical"
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "rabbitmq"
+version = "0.2.0"
+description = "CFFI bindings to librabbitmq 0.8.0"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+cffi = "*"
 
 [[package]]
 name = "requests"
@@ -677,7 +701,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "dd162523f33377d833fb4842dd7c3f855ab8f7273211d55543d37a387901eb86"
+content-hash = "075bf30cdcbe82b20037624735da547bfb318a830beff023237addcfdd60359a"
 
 [metadata.files]
 amqp = [
@@ -976,6 +1000,10 @@ oauthlib = [
     {file = "oauthlib-3.2.0-py3-none-any.whl", hash = "sha256:6db33440354787f9b7f3a6dbd4febf5d0f93758354060e802f6c06cb493022fe"},
     {file = "oauthlib-3.2.0.tar.gz", hash = "sha256:23a8208d75b902797ea29fd31fa80a15ed9dc2c6c16fe73f5d346f83f6fa27a2"},
 ]
+pika = [
+    {file = "pika-1.2.0-py2.py3-none-any.whl", hash = "sha256:59da6701da1aeaf7e5e93bb521cc03129867f6e54b7dd352c4b3ecb2bd7ec624"},
+    {file = "pika-1.2.0.tar.gz", hash = "sha256:f023d6ac581086b124190cb3dc81dd581a149d216fa4540ac34f9be1e3970b89"},
+]
 prompt-toolkit = [
     {file = "prompt_toolkit-3.0.28-py3-none-any.whl", hash = "sha256:30129d870dcb0b3b6a53efdc9d0a83ea96162ffd28ffe077e94215b233dc670c"},
     {file = "prompt_toolkit-3.0.28.tar.gz", hash = "sha256:9f1cd16b1e86c2968f2519d7fb31dd9d669916f515612c269d14e9ed52b51650"},
@@ -1012,6 +1040,9 @@ python3-openid = [
 pytz = [
     {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},
     {file = "pytz-2022.1.tar.gz", hash = "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7"},
+]
+rabbitmq = [
+    {file = "rabbitmq-0.2.0-py2.py3-none-any.whl", hash = "sha256:74cfbc0f365019a8f318cd1ad9b1f85682768568fa3816740df37509a6dfbc2d"},
 ]
 requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
