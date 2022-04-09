@@ -10,7 +10,7 @@ class CalendarAppConfig(AppConfig):
     def ready(self):
         from calendar_app import signals
         from calendar_app.models import Event
-        User = get_user_model()
+        # User = get_user_model()
 
-        post_save.connect(signals.add_country_events_signal, sender=User)
+        # post_save.connect(signals.add_country_events_signal, sender=User)
         post_save.connect(signals.send_mail_notification_signal, sender=Event)

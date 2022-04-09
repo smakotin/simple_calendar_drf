@@ -12,8 +12,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'title', 'start_time', 'end_time', 'official_holiday')
-    list_display_links = ('id', 'user')
+    list_display = ('id', 'title', 'start_time', 'end_time', 'official_holiday')
 
 
 admin.site.register(Notification)

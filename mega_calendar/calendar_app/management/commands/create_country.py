@@ -1,9 +1,13 @@
+from zoneinfo import ZoneInfo
+
 from bs4 import BeautifulSoup
 import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 
-from calendar_app.models import Country
+from calendar_app.models import Country, Event
+from calendar_app.utils import get_calendar_to_city
 
 
 def get_all_countries(*args, **kwargs):
@@ -29,5 +33,4 @@ class Command(BaseCommand):
                 country_obj.save()
             except IntegrityError:
                 continue
-
 
