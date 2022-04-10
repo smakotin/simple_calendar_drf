@@ -1,18 +1,19 @@
 from rest_framework.serializers import ModelSerializer
 
-from calendar_app.models import Event
+from calendar_app.models import UserEvent, Event
 
 
-class EventSerializer(ModelSerializer):
+class UserEventSerializer(ModelSerializer):
     class Meta:
-        model = Event
+        model = UserEvent
         fields = '__all__'
+        depth = 1
 
 
 class CreateEventSerializer(ModelSerializer):
     class Meta:
         model = Event
-        exclude = ('created_at', 'user', 'official_holiday')
+        exclude = ('created_at', 'user', 'official_holiday', 'country')
 
 
 

@@ -11,5 +11,3 @@ class CountryTests(APITestCase):
         country = Country.objects.get(country='Angola')
         print(country)
         self.assertEqual(country.pk, 1)
-
-

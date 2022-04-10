@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class User(AbstractUser):
@@ -41,7 +42,7 @@ class Event(models.Model):
         default=Notification.get_default_notification
     )
     official_holiday = models.BooleanField(default=False)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, blank=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.end_time:
@@ -53,10 +54,17 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['title', 'start_time', 'end_time'], name='unique_events')
+        ]
+
 
 class UserEvent(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    official_holiday = models.BooleanField(default=False)
+
 
 
 

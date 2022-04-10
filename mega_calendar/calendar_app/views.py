@@ -7,8 +7,8 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from calendar_app.models import Event
-from calendar_app.serializers import EventSerializer, CreateEventSerializer
+from calendar_app.models import Event, UserEvent
+from calendar_app.serializers import CreateEventSerializer, UserEventSerializer
 
 from django_filters import rest_framework as filters
 
@@ -42,23 +42,23 @@ class EventsCreateApiView(CreateAPIView):
     queryset = Event.objects
 
     def perform_create(self, serializer):
-        serializer.save(user_id=self.request.user.pk)
+        serializer.save(user=(self.request.user.pk,))
 
 
 class EventsListApiView(ListAPIView):
-    serializer_class = EventSerializer
+    serializer_class = UserEventSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Event.objects.filter(
+        queryset = UserEvent.objects.filter(
             user_id=user.pk
         )
         return queryset
 
 
 class EventsDayListApiView(ListAPIView):
-    serializer_class = EventSerializer
+    serializer_class = UserEventSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EventFilter

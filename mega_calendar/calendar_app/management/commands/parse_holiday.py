@@ -1,10 +1,11 @@
-from time import sleep
-
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
 import requests
 from django.conf import settings
 from zoneinfo import ZoneInfo
+
+from django.db import IntegrityError
+
 
 from tatsu.exceptions import FailedParse
 from django.core.exceptions import ObjectDoesNotExist
@@ -31,20 +32,29 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         countries = get_all_countries()
         for country in countries:
-            sleep(1)
+            country_obj = Country(country=country)
+            try:
+                country_obj.save()
+            except IntegrityError:
+                continue
+        for country in countries:
             new_country = country.replace(' ', '-').lower()
             try:
                 calendar = get_calendar_to_city(new_country)
                 print(f'Parsing...{country}...............', end='')
                 for event in calendar.events:
-                    event = Event.objects.create(
-                        title=event.name,
-                        start_time=event.begin.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
-                        end_time=event.end.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
-                        official_holiday=True,
-                        country_id=Country.objects.get(country=country).pk
-                    )
-                    event.save()
+                    try:
+                        event = Event.objects.create(
+                            title=event.name,
+                            start_time=event.begin.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
+                            end_time=event.end.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
+                            official_holiday=True,
+                            country_id=Country.objects.get(country=country).pk
+                        )
+                        event.save()
+                    except IntegrityError:
+                        print(f'.......Error when saving the event {event.name}, maybe duplicate')
+                        continue
                 print('DONE')
             except FailedParse:
                 bad_country = Country.objects.filter(country=country)
