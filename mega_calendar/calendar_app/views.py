@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from calendar_app.models import Event, UserEvent
-from calendar_app.serializers import CreateEventSerializer, UserEventSerializer
+from calendar_app.serializers import CreateEventSerializer, UserEventSerializer, EventSerializer
 
 from django_filters import rest_framework as filters
 
@@ -42,29 +42,43 @@ class EventsCreateApiView(CreateAPIView):
     queryset = Event.objects
 
     def perform_create(self, serializer):
-        serializer.save(user=(self.request.user.pk,))
+        serializer.save(user=(self.request.user.pk,)) ## TODO
 
 
 class EventsListApiView(ListAPIView):
-    serializer_class = UserEventSerializer
+    serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        queryset = UserEvent.objects.filter(
-            user_id=user.pk
+        queryset = Event.objects.prefetch_related('user').filter(
+            user=user
         )
         return queryset
 
 
 class EventsDayListApiView(ListAPIView):
-    serializer_class = UserEventSerializer
+    serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EventFilter
 
     def get_queryset(self):
-        queryset = Event.objects.filter(user_id=self.request.user.pk)
+        queryset = Event.objects.filter(user=self.request.user)
+        return queryset
+
+
+class HolidaysListApiView(ListAPIView):
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = EventFilter
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(
+            user=self.request.user,
+            official_holiday=True
+        )
         return queryset
 
     # def get_queryset(self):

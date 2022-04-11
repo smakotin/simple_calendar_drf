@@ -5,7 +5,7 @@ from django.db.models import UniqueConstraint
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    country = models.ForeignKey('Country', null=True, blank=True, on_delete=models.CASCADE)
+    country = models.ForeignKey('Country', null=True, blank=True, on_delete=models.SET_NULL)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -41,7 +41,7 @@ class Event(models.Model):
         on_delete=models.SET_DEFAULT,
         default=Notification.get_default_notification
     )
-    official_holiday = models.BooleanField(default=False)
+    official_holiday = models.BooleanField(default=False, db_index=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):

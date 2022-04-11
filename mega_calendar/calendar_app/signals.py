@@ -1,4 +1,4 @@
-from calendar_app.models import UserEvent, Event
+from calendar_app.models import UserEvent, Event, User
 from calendar_app.tasks import send_notification
 
 
@@ -28,3 +28,21 @@ def add_country_events_signal(sender, instance, **kwargs):
 #         notification_time = start_time - notify
 #
 #         send_notification.apply_async((user_email,), eta=notification_time)
+
+
+def add_event_to_user_signal(sender, **kwargs):
+    if kwargs['instance'].official_holiday and kwargs['instance'].country_id:
+        country_id = kwargs['instance'].country_id
+        event_id = kwargs['instance'].id
+        user_queryset = User.objects.filter(country_id=country_id)
+        for user in user_queryset:
+            user_event = UserEvent.objects.create(
+                event_id=event_id,
+                user_id=user.pk,
+                official_holiday=True
+            )
+            user_event.save()
+
+
+
+

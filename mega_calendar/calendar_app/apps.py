@@ -14,3 +14,4 @@ class CalendarAppConfig(AppConfig):
 
         post_save.connect(signals.add_country_events_signal, sender=User)
         # post_save.connect(signals.send_mail_notification_signal, sender=Event)
+        post_save.connect(signals.add_event_to_user_signal, sender=Event)
