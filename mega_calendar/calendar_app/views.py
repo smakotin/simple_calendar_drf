@@ -4,6 +4,7 @@ from django.shortcuts import render
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -42,7 +43,7 @@ class EventsCreateApiView(CreateAPIView):
     queryset = Event.objects
 
     def perform_create(self, serializer):
-        serializer.save(user=(self.request.user.pk,)) ## TODO
+        serializer.save(user=(self.request.user.pk,))
 
 
 class EventsListApiView(ListAPIView):

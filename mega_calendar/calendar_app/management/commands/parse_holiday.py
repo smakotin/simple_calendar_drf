@@ -5,7 +5,7 @@ from django.conf import settings
 from zoneinfo import ZoneInfo
 
 from django.db import IntegrityError
-
+from tqdm import tqdm
 
 from tatsu.exceptions import FailedParse
 from django.core.exceptions import ObjectDoesNotExist
@@ -37,11 +37,12 @@ class Command(BaseCommand):
                 country_obj.save()
             except IntegrityError:
                 continue
-        for country in countries:
-            new_country = country.replace(' ', '-').lower()
+        for country in tqdm(countries):
+            new_country = country.replace(' ', '-').lower() # TODO Bulk create
             try:
                 calendar = get_calendar_to_city(new_country)
-                print(f'Parsing...{country}...............', end='')
+                # print(f'Parsing...{country}...............', end='')
+
                 for event in calendar.events:
                     try:
                         event = Event.objects.create(
@@ -55,11 +56,11 @@ class Command(BaseCommand):
                     except IntegrityError:
                         print(f'.......Error when saving the event {event.name}, maybe duplicate')
                         continue
-                print('DONE')
+                # print(f'{country} DONE')
             except FailedParse:
                 bad_country = Country.objects.filter(country=country)
                 try:
                     bad_country.delete()
-                    print(f'{country} DELETED')
+                    # print(f'{country} DELETED')
                 except ObjectDoesNotExist:
                     print(f'{country} has not been deleted')
