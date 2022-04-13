@@ -14,6 +14,6 @@ def get_all_countries():
 
 
 def get_calendar_to_city(country):
-    url = f"https://www.officeholidays.com/ics/ics_country.php?tbl_country={country}"
+    url = f"https://www.officeholidays.com/ics/{country}"
     calendar = Calendar(requests.get(url).text)
     return calendar
