@@ -6,7 +6,6 @@ def add_country_events_signal(sender, instance, **kwargs):
     if instance.country:
         user_holidays = UserEvent.objects.filter(
             user_id=instance.pk,
-            official_holiday=True
         )
         if user_holidays.exists():
             user_holidays.delete()
@@ -15,7 +14,6 @@ def add_country_events_signal(sender, instance, **kwargs):
             user_event = UserEvent.objects.create(
                 user_id=instance.pk,
                 event_id=event.pk,
-                official_holiday=True
             )
             user_event.save()
 
@@ -39,9 +37,7 @@ def add_event_to_user_signal(sender, **kwargs):
             user_event = UserEvent.objects.create(
                 event_id=event_id,
                 user_id=user.pk,
-                official_holiday=True
             )
-            user_event.save()
 
 
 

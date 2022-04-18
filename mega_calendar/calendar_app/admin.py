@@ -17,7 +17,7 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(UserEvent)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_id', 'event_id', 'official_holiday')
+    list_display = ('id', 'user_id', 'event_id')
     list_display_links = ('id', 'user_id', 'event_id',)
 
 

@@ -10,6 +10,36 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.old_country = self.country
+
+    def save(self, *args, **kwargs):
+        if self.country and self.old_country != self.country:
+            user_holidays = UserEvent.objects.filter(
+                user_id=self.pk,
+            )
+            if user_holidays.exists():
+                user_holidays.delete()
+            event_queryset = Event.objects.filter(country_id=self.country_id)
+            user_event_list = []
+            for event in event_queryset:
+                user_event = UserEvent(
+                    user_id=self.pk,
+                    event_id=event.pk,
+                )
+                user_event_list.append(user_event)
+            UserEvent.objects.bulk_create(user_event_list, ignore_conflicts=True)
+            self.old_country = self.country
+        if not self.country and self.old_country:
+            user_holidays = UserEvent.objects.filter(
+                user_id=self.pk,
+            )
+            if user_holidays.exists():
+                user_holidays.delete()
+            self.old_country = None
+        return super().save(*args, **kwargs)
+
 
 class Country(models.Model):
     country = models.CharField(max_length=100, unique=True)
@@ -37,9 +67,9 @@ class Event(models.Model):
     end_time = models.DateTimeField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     notification = models.ForeignKey(
-        Notification,
-        on_delete=models.SET_DEFAULT,
-        default=Notification.get_default_notification
+        Notification, null=True,
+        on_delete=models.SET_NULL,
+        default=None
     )
     official_holiday = models.BooleanField(default=False, db_index=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, blank=True, null=True)
@@ -63,8 +93,6 @@ class Event(models.Model):
 class UserEvent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    official_holiday = models.BooleanField(default=False)
-
 
 
 

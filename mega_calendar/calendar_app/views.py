@@ -1,17 +1,26 @@
 # from datetime import timedelta
 # from django.db.models import Q
+from zoneinfo import ZoneInfo
+
+from django.conf import settings
+from django.db import IntegrityError
+from django.http import HttpResponse
 from django.shortcuts import render
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from tatsu.exceptions import FailedParse
+from tqdm import tqdm
 
-from calendar_app.models import Event, UserEvent
-from calendar_app.serializers import CreateEventSerializer, UserEventSerializer, EventSerializer
+from calendar_app.models import Event, Country
+from calendar_app.serializers import CreateEventSerializer, EventSerializer
 
 from django_filters import rest_framework as filters
+
+from calendar_app.utils import get_calendar_to_city
 
 
 def index(request):
@@ -96,3 +105,35 @@ class HolidaysListApiView(ListAPIView):
     #         )
     #     )
     #     return queryset
+
+
+class UpdateHolidaysToCountry(APIView):
+    def get(self, request, *args, **kwargs):
+        country = kwargs['country'].capitalize()
+        country_id = Country.objects.get(country=country).pk
+        event_obj_lst = []
+        try:
+            calendar = get_calendar_to_city(country)
+            for event in tqdm(calendar.events):
+                event_obj = Event(
+                    title=event.name,
+                    start_time=event.begin.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
+                    end_time=event.end.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
+                    official_holiday=True,
+                    country_id=country_id
+                )
+                if event_obj not in event_obj_lst:
+                    event_obj_lst.append(event_obj)
+            try:
+                Event.objects.bulk_create(event_obj_lst, ignore_conflicts=True)
+            except IntegrityError:
+                print(f'.......Error when saving the event {event.name}, maybe duplicate')
+            print('complete')
+            return Response(status=status.HTTP_200_OK)
+        except FailedParse:
+            print('FailedParse')
+        return Response(status=status.HTTP_417_EXPECTATION_FAILED)
+
+
+
+

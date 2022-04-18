@@ -15,4 +15,5 @@ urlpatterns = [
     # path('api/events/date/<date:my_date>/', views.EventsDayListApiView.as_view()),
     path('api/events/date/', views.EventsDayListApiView.as_view()),
     path('api/holidays/date/', views.HolidaysListApiView.as_view()),
+    path('api/holidays/update/<str:country>', views.UpdateHolidaysToCountry.as_view()),
 ]

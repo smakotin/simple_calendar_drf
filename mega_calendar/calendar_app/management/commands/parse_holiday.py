@@ -38,6 +38,7 @@ class Command(BaseCommand):
                 continue
         for country in tqdm(countries):
             new_country = country.replace(' ', '-').lower()
+            country_id = Country.objects.get(country=country).pk
             event_obj_lst = []
             try:
                 calendar = get_calendar_to_city(new_country)
@@ -47,10 +48,9 @@ class Command(BaseCommand):
                         start_time=event.begin.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
                         end_time=event.end.datetime.replace(tzinfo=ZoneInfo(settings.TIME_ZONE)),
                         official_holiday=True,
-                        country_id=Country.objects.get(country=country).pk
+                        country_id=country_id
                     )
-                    if event_obj not in event_obj_lst:
-                        event_obj_lst.append(event_obj)
+                    event_obj_lst.append(event_obj)
                 try:
                     Event.objects.bulk_create(event_obj_lst, ignore_conflicts=True)
                 except IntegrityError:

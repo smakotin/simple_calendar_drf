@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 
 
 class CalendarAppConfig(AppConfig):
@@ -12,6 +12,6 @@ class CalendarAppConfig(AppConfig):
         from calendar_app.models import Event
         User = get_user_model()
 
-        post_save.connect(signals.add_country_events_signal, sender=User)
+        # post_save.connect(signals.add_country_events_signal, sender=User)
         # post_save.connect(signals.send_mail_notification_signal, sender=Event)
         post_save.connect(signals.add_event_to_user_signal, sender=Event)

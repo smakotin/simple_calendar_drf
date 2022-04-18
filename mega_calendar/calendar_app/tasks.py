@@ -10,4 +10,3 @@ def send_notification(email):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email, ]
     send_mail(subject, message, email_from, recipient_list)
-
